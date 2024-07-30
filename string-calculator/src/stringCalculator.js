@@ -13,10 +13,13 @@ function add(numbers) {
     }
 
     const numArray = numbers.split(delimiter);
-    return numArray.reduce((sum, num) => {
-        const parsedNum = parseInt(num);
-        return sum + (isNaN(parsedNum) ? 0 : parsedNum);
-    }, 0);
+    const negatives = numArray.filter(num => parseInt(num) < 0);
+
+    if (negatives.length > 0) {
+        throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
+    }
+
+    return numArray.reduce((sum, num) => sum + (isNaN(parseInt(num)) ? 0 : parseInt(num)), 0);
 }
 
 module.exports = add;
