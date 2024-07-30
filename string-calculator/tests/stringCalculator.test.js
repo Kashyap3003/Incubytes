@@ -40,3 +40,9 @@ test('should throw an error for multiple negative numbers', () => {
     expect(() => add("//;\n-1;-2;3")).toThrow("negative numbers not allowed -1,-2");
     expect(() => add("//|\n-10|20|-30")).toThrow("negative numbers not allowed -10,-30");
 });
+
+test('should handle any amount of numbers', () => {
+    expect(add("1,2,3,4,5,6,7,8,9,10")).toBe(55);
+    expect(add("//;\n1;2;3;4;5;6;7;8;9;10")).toBe(55);
+    expect(add("//|\n10|20|30|40|50|60|70|80|90|100")).toBe(550);
+});
