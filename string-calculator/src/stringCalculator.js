@@ -3,7 +3,8 @@ function add(numbers) {
         return 0;
     }
 
-    const numArray = numbers.split(",");
+    // Split the input string by commas or new lines
+    const numArray = numbers.split(/[\n,/]/);
     return numArray.reduce((sum, num) => sum + parseInt(num), 0);
 }
 
