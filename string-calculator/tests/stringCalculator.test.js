@@ -27,6 +27,8 @@ test('should handle new lines between numbers', () => {
 test('should support different delimiters', () => {
     expect(add("//;\n1;2")).toBe(3);
     expect(add("//|\n10|20|30")).toBe(60);
+    expect(add("//[***]\n1***2***3")).toBe(6);
+    expect(add("//[*][%]\n1*2%3")).toBe(6);
 });
 
 test('should throw an error for negative numbers', () => {

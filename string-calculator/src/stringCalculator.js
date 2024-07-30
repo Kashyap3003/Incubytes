@@ -8,12 +8,27 @@ function add(numbers) {
     if (numbers.startsWith("//")) {
         // Custom delimiter specified
         const parts = numbers.split("\n", 2);
-        delimiter = new RegExp(parts[0].slice(2).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); // Escape special characters
+        const delimiterPart = parts[0].slice(2); // Extract delimiter part
+        if (delimiterPart.startsWith('[') && delimiterPart.endsWith(']')) {
+            // Handle multiple delimiters
+            const delimiters = delimiterPart
+                .slice(1, -1)
+                .split('][')
+                .map(delim => delim.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // Escape special characters
+                .join('|'); // Combine delimiters into regex OR pattern
+            delimiter = new RegExp(delimiters);
+        } else {
+            // Single delimiter
+            delimiter = new RegExp(delimiterPart.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); // Escape special characters
+        }
         numbers = parts[1]; // Update numbers to the remaining part
     }
 
     const numArray = numbers.split(delimiter);
-    const negatives = numArray.filter(num => parseInt(num) < 0);
+    const negatives = numArray.filter(num => {
+        const parsedNum = parseInt(num);
+        return !isNaN(parsedNum) && parsedNum < 0;
+    });
 
     if (negatives.length > 0) {
         throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
