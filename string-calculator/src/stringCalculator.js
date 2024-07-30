@@ -1,44 +1,76 @@
 function add(numbers) {
-    if (numbers === "") {
+    // checking for input, if it is emphty than it return 
+    if (!numbers) {
         return 0;
     }
 
-    let delimiter = /[\n,]/; // Default delimiters: comma and newline
+    const defaultDelimiter = /[\n,]/;
 
-    if (numbers.startsWith("//")) {
-        // Custom delimiter specified
-        const parts = numbers.split("\n", 2);
-        const delimiterPart = parts[0].slice(2); // Extract delimiter part
 
-        if (delimiterPart.startsWith('[') && delimiterPart.endsWith(']')) {
-            // Handle multiple delimiters
+    if (numbers.startsWith('//')) {
+        // extracting custom delimiter and the numbers part from the string
+        const [delimiterPart, numbersPart] = numbers.split('\n', 2);
+
+        if (delimiterPart.startsWith('//[')) {
+            // extracting and escaping special characters from multiple delimiters
             const delimiters = delimiterPart
-                .slice(1, -1) // Remove outer brackets
-                .split('][') // Split by inner brackets
-                .map(delim => delim.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // Escape special characters
-                .join('|'); // Combine delimiters into regex OR pattern
-            delimiter = new RegExp(delimiters);
-        } else {
-            // Single delimiter
-            delimiter = new RegExp(delimiterPart.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); // Escape special characters
+                .slice(3, -1)
+                .split('][')
+                .map(delim => escapeRegExp(delim)) // here we are escapimg special characters
+                .join('|');
+
+            return calculateSum(numbersPart, new RegExp(delimiters, 'g'));
+        } 
+        else {
+
+            const singleDelimiter = delimiterPart.slice(2);
+            return calculateSum(numbersPart, new RegExp(escapeRegExp(singleDelimiter), 'g'));
         }
-        numbers = parts[1]; // Update numbers to the remaining part
+    } 
+    else {
+        // this is the default delimiter
+        return calculateSum(numbers, defaultDelimiter);
     }
+}
+
+function calculateSum(numbers, delimiter) {
 
     const numArray = numbers.split(delimiter);
-    const negatives = numArray.filter(num => {
-        const parsedNum = parseInt(num);
-        return !isNaN(parsedNum) && parsedNum < 0;
-    });
+
+
+    const negatives = numArray.filter(isNegativeNumber);
 
     if (negatives.length > 0) {
-        throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
+        throw new Error(`negative numbers not allowed ${negatives.join(',')}`);
     }
 
+
     return numArray
-        .map(num => parseInt(num))
-        .filter(num => num <= 1000) // Ignore numbers greater than 1000
-        .reduce((sum, num) => sum + (isNaN(num) ? 0 : num), 0);
+        .map(toNumber)
+        .filter(isValidNumber)
+        .reduce(sumNumbers, 0);
+}
+
+// here are some helper functions
+function escapeRegExp(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function isNegativeNumber(num) {
+    const parsedNum = toNumber(num);
+    return !isNaN(parsedNum) && parsedNum < 0;
+}
+
+function toNumber(num) {
+    return parseInt(num, 10);
+}
+
+function isValidNumber(num) {
+    return !isNaN(num) && num <= 1000;
+}
+
+function sumNumbers(sum, num) {
+    return sum + num;
 }
 
 module.exports = add;
