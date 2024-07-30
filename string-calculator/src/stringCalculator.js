@@ -9,7 +9,7 @@ function add(numbers) {
         // Custom delimiter specified
         const parts = numbers.split("\n", 2);
         const delimiterPart = parts[0].slice(2); // Extract delimiter part
-        
+
         if (delimiterPart.startsWith('[') && delimiterPart.endsWith(']')) {
             // Handle multiple delimiters
             const delimiters = delimiterPart
