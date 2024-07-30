@@ -48,3 +48,9 @@ test('should handle any amount of numbers', () => {
     expect(add("//;\n1;2;3;4;5;6;7;8;9;10")).toBe(55);
     expect(add("//|\n10|20|30|40|50|60|70|80|90|100")).toBe(550);
 });
+
+test('should ignore numbers greater than 1000', () => {
+    expect(add("1001,2")).toBe(2);
+    expect(add("//;\n1001;2;3")).toBe(5);
+    expect(add("//|\n10|20|1001|30")).toBe(60);
+});

@@ -34,7 +34,10 @@ function add(numbers) {
         throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
     }
 
-    return numArray.reduce((sum, num) => sum + (isNaN(parseInt(num)) ? 0 : parseInt(num)), 0);
+    return numArray
+        .map(num => parseInt(num))
+        .filter(num => num <= 1000) // Ignore numbers greater than 1000
+        .reduce((sum, num) => sum + (isNaN(num) ? 0 : num), 0);
 }
 
 module.exports = add;
