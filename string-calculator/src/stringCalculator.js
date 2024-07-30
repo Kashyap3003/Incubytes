@@ -9,11 +9,12 @@ function add(numbers) {
         // Custom delimiter specified
         const parts = numbers.split("\n", 2);
         const delimiterPart = parts[0].slice(2); // Extract delimiter part
+        
         if (delimiterPart.startsWith('[') && delimiterPart.endsWith(']')) {
             // Handle multiple delimiters
             const delimiters = delimiterPart
-                .slice(1, -1)
-                .split('][')
+                .slice(1, -1) // Remove outer brackets
+                .split('][') // Split by inner brackets
                 .map(delim => delim.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // Escape special characters
                 .join('|'); // Combine delimiters into regex OR pattern
             delimiter = new RegExp(delimiters);
